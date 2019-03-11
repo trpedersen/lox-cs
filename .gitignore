@@ -1,0 +1,29 @@
+﻿################################################################################
+# This .gitignore file was automatically created by Microsoft(R) Visual Studio.
+################################################################################
+
+/.vs
+/build
+/**/bin/*
+x
+
+!/**/NicheConversionTasPol/**
+!/**/NicheConversionTasPol/**/bin/*
+!/**/NicheConversionTasPol/**/*.exe
+!/**/NicheConversionTasPol/**/*.com
+!/**/NicheConversionTasPol/**/*.dll
+
+/**/obj/*
+/packages
+/test/universe_importer.test/bin/Debug/netcoreapp2.1
+/TestResults
+/tmp_idm_data
+/src/data_migration/test
+/src/data_migration/_test
+/src/data_migration/_test.ps1
+/src/data_migration/_test2.ps1
+/vendor/niche/_DataMigrationNiche
+/vendor/niche/_first pass from rob
+/vendor/niche/niche scripts/NicheConversionTasPol - 20181116
+/vendor/niche/_NicheConversionTasPol
+
