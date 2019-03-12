@@ -1,10 +1,10 @@
 using NUnit.Framework;
 
-using static lox1.Core.Runner;
+using static Lox1.Core.Lox;
 
-namespace Tests
+namespace Lox1.Tests
 {
-    public class Tests
+    public class UnitTests
     {
         [SetUp]
         public void Setup()

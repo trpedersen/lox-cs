@@ -1,9 +1,10 @@
 ﻿using System;
 using System.IO;
 
-using static lox1.Core.Runner;
+using static Lox1.Core.Lox;
+using Lox1.Core;
 
-namespace lox1
+namespace Lox1
 {
     class Program
     {
@@ -20,6 +21,10 @@ namespace lox1
             } else
             {
                 RunPrompt();
+            }
+            if (HadError)
+            {
+                return (int) ExitCode.LoxError;
             }
             return 0;
         }

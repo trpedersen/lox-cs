@@ -3,11 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.28307.168
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "lox1", "lox1\lox1.csproj", "{DA78176A-AC5F-41CD-8D59-27774FC974CF}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Lox1", "Lox1\Lox1.csproj", "{DA78176A-AC5F-41CD-8D59-27774FC974CF}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "lox1.Tests", "lox1.Tests\lox1.Tests.csproj", "{422922DD-812F-4242-ACC6-9088D6233FCF}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Lox1.Tests", "Lox1.Tests\Lox1.Tests.csproj", "{422922DD-812F-4242-ACC6-9088D6233FCF}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "lox1.Core", "lox1.Core\lox1.Core.csproj", "{B70F2F7A-3D7B-41F9-A9AB-735DC2F34E5A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Lox1.Core", "Lox1.Core\Lox1.Core.csproj", "{B70F2F7A-3D7B-41F9-A9AB-735DC2F34E5A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
