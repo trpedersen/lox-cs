@@ -13,11 +13,12 @@ namespace Lox1
             if(args.Length > 1)
             {
                 Console.WriteLine("Usage: lox1 [script]");
-                return 1;
+                return (int) ExitCode.InvalidArguments;
             }
             else if (args.Length == 1)
             {
-                RunFile(args[0]);
+                Console.WriteLine($"Running file {args[0]}");
+                return (int) RunFile(args[0]);
             } else
             {
                 RunPrompt();

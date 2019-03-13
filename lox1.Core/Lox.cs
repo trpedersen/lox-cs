@@ -8,13 +8,18 @@ namespace Lox1.Core
         public static bool HadError { get; private set;}
         private static readonly TextWriter errorWriter = Console.Error;
 
-        public static int RunFile(string path)
+        public static ExitCode RunFile(string path)
         {
             string input = File.ReadAllText(path);
-            return Run(input);
+            Run(input);
+            if (HadError)
+            {
+                return ExitCode.LoxError;
+            }
+            return ExitCode.Success;
         }
 
-        public static void RunPrompt()
+        public static ExitCode RunPrompt()
         {
             bool keepGoing = true;
             Console.CancelKeyPress += delegate(object sender, ConsoleCancelEventArgs e)
@@ -28,13 +33,26 @@ namespace Lox1.Core
             {
                 Console.Write("> ");
                 string input = Console.ReadLine();
+                Run(input);
             }
-         //   return Run(input);
+            if (HadError)
+            {
+                return ExitCode.LoxError;
+            }
+            return ExitCode.Success;
         }
 
         public static int Run(string input)
         {
-            Console.WriteLine(input);
+            if (input != null)
+            {
+                Scanner scanner = new Scanner(input);
+                var tokens = scanner.ScanTokens();
+                foreach (var token in tokens)
+                {
+                    Console.WriteLine(token.ToString());
+                }
+            }
             return 0;
         }
 

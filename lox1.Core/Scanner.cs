@@ -41,9 +41,8 @@ namespace Lox1.Core
             this.source = source.ToCharArray();
         }
 
-        private List<Token> ScanTokens()
+        public List<Token> ScanTokens()
         {
-
 
             while (!IsAtEnd())
             {
@@ -54,6 +53,87 @@ namespace Lox1.Core
 
             tokens.Add(new Token(TokenType.EOF, "", null, line));
             return tokens;
+        }
+
+        enum ScanState
+        {
+            LookingForClosingAsterisk,
+            LookingForClosingSlash,
+            NotAcceptedFinal,
+            AcceptedFinal,
+        }
+
+        private void ScanFromSlash ()
+        {
+            // Pre: we've scanned a '/', now let's see if it's just a single slash, // comment or /* comment */
+
+            int startLine = line;
+
+            if (Match('/'))
+            {
+                // A comment goes until the end of the line.                
+                while (Peek() != '\n' && !IsAtEnd()) Advance();
+            }
+            else if (Match('*'))
+            {
+                // Start of /* */ comment, advance repeatedly to find end of comment.
+
+                ScanState scanState = ScanState.LookingForClosingAsterisk;
+                while (!(scanState == ScanState.AcceptedFinal || scanState == ScanState.NotAcceptedFinal))
+                {
+                    switch (scanState)
+                    {
+                        case ScanState.LookingForClosingAsterisk:
+                            switch (Peek()){
+                                case '\n':
+                                    line++;
+                                    Advance();
+                                    break;
+                                case '*':
+                                    scanState = ScanState.LookingForClosingSlash;
+                                    Advance();
+                                    break;
+                                case '\0':
+                                    scanState = ScanState.NotAcceptedFinal;
+                                    break;
+                                default:
+                                    Advance();
+                                    break;
+                                       
+                            }
+                            break;
+                        case ScanState.LookingForClosingSlash:
+                            switch (Peek())
+                            {
+                                case '\n':
+                                    line++;
+                                    Advance();
+                                    break;
+                                case '/':
+                                    scanState = ScanState.AcceptedFinal;
+                                    Advance();
+                                    break;
+                                case '\0':
+                                    scanState = ScanState.NotAcceptedFinal;
+                                    break;
+                                default:
+                                    Advance();
+                                    break;
+                            }
+                            break;
+                        default:
+                            break;
+                    }
+                }
+                if(scanState != ScanState.AcceptedFinal)
+                {
+                    Lox.Error(startLine, "Invalid /* */ style comment, missing closing '*/'");
+                }
+            }
+            else
+            {
+                AddToken(SLASH);
+            }
         }
 
         private void ScanToken()
@@ -78,15 +158,7 @@ namespace Lox1.Core
                 case '>': AddToken(Match('=') ? GREATER_EQUAL : GREATER); break;
 
                 case '/':
-                    if (Match('/'))
-                    {
-                        // A comment goes until the end of the line.                
-                        while (Peek() != '\n' && !IsAtEnd()) Advance();
-                    }
-                    else
-                    {
-                        AddToken(SLASH);
-                    }
+                    ScanFromSlash();
                     break;
 
                 case ' ':
