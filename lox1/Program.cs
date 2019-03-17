@@ -30,8 +30,5 @@ namespace Lox1
             return 0;
         }
 
-
-
-
     }
 }

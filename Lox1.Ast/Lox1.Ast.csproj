@@ -5,9 +5,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="Ast\**" />
-    <EmbeddedResource Remove="Ast\**" />
-    <None Remove="Ast\**" />
+    <ProjectReference Include="..\Lox1.Core\Lox1.Core.csproj" />
   </ItemGroup>
 
 </Project>
