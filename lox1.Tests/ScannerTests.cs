@@ -6,7 +6,7 @@ using System.Linq;
 
 namespace Lox1.Tests
 {
-    public class UnitTests
+    public class ScannerTests
     {
         [SetUp]
         public void Setup()

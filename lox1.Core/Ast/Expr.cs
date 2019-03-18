@@ -1,6 +1,6 @@
 using Lox1.Core;
 
-namespace Lox1.Ast
+namespace Lox1.Core.Ast
 {
     public abstract class Expr
     {

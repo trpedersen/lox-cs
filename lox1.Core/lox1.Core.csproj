@@ -4,10 +4,4 @@
     <TargetFramework>netstandard2.0</TargetFramework>
   </PropertyGroup>
 
-  <ItemGroup>
-    <Compile Remove="Ast\**" />
-    <EmbeddedResource Remove="Ast\**" />
-    <None Remove="Ast\**" />
-  </ItemGroup>
-
 </Project>

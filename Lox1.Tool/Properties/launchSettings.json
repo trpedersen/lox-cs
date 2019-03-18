@@ -2,7 +2,7 @@
   "profiles": {
     "Lox1.Tool": {
       "commandName": "Project",
-      "commandLineArgs": "generate-ast -o D:\\repos\\lox1\\Lox1.Ast"
+      "commandLineArgs": "generate-ast -o D:\\repos\\lox1\\Lox1.Core\\Ast"
     }
   }
 }
