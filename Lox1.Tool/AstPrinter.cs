@@ -18,12 +18,12 @@ namespace Lox1.Tool
 
         public void Write(Expr expr)
         {
-            stackDepth = -1;
+            currentIndentLevel = 0;
             writer.Write(expr.Accept<string>(this).Trim());
         }
         public void WriteLine(Expr expr)
         {
-            stackDepth = -1;
+            currentIndentLevel = 0;
             writer.WriteLine(expr.Accept<string>(this).Trim());
         }
 
@@ -43,14 +43,15 @@ namespace Lox1.Tool
                 return "nil";
             else
             {
-                StringBuilder sb = new StringBuilder();
-                sb.Append("\n");
-                for (int i = 0; i < stackDepth + 1; i++)
-                {
-                    sb.Append(standardIndent);
-                }
-                sb.Append(expr.Value.ToString());
-                return sb.ToString();
+                //StringBuilder sb = new StringBuilder();
+                //sb.Append("\n");
+                //for (int i = 0; i < stackDepth + 1; i++)
+                //{
+                //    sb.Append(standardIndent);
+                //}
+                //sb.Append(expr.Value.ToString());
+                //return sb.ToString();
+                return expr.Value.ToString();
             }
         }
 
@@ -59,32 +60,65 @@ namespace Lox1.Tool
             return Parenthesise(expr.Operator.Lexeme, expr.Right);
         }
 
-        private int stackDepth = -1;
+        private int currentIndentLevel = 0;
         private string standardIndent = "  ";
+        static string currentIndent = "";
+
+        private void PushIndent()
+        {
+            currentIndentLevel++;
+            currentIndent += standardIndent;
+        }
+
+        private void PopIndent()
+        {
+            currentIndentLevel--;
+            if (currentIndentLevel < 0)
+                currentIndentLevel = 0;
+            currentIndent = "";
+            for (int i = 0; i < currentIndentLevel; i++)
+            {
+                currentIndent += standardIndent;
+            }
+        }
 
         private string Parenthesise(string name, params Expr[] expressions)
         {
             StringBuilder sb = new StringBuilder();
-            stackDepth++;
-            if (stackDepth != 0)
+
+            sb.Append("(")
+                .Append(name);
+
+            bool allLiterals = true;
+            foreach(var expr in expressions)
             {
-                sb.Append("\n");
+                if(!(expr is Expr.Literal))
+                {
+                    allLiterals = false;
+                    break;
+                }
             }
 
-            for (int i = 0; i < stackDepth; i++)
+            if (allLiterals)
             {
-                sb.Append(standardIndent);
+                foreach (var expr in expressions)
+                {
+                    sb.Append(" ")
+                        .Append(expr.Accept<string>(this));
+                }
             }
-
-            sb.Append("(").Append(name);
-
-            foreach (Expr expr in expressions)
+            else
             {
-                sb.Append(" ");
-                sb.Append(expr.Accept<string>(this));
+                PushIndent();
+                foreach (Expr expr in expressions)
+                {
+                    sb.Append("\n")
+                        .Append(currentIndent)
+                        .Append(expr.Accept<string>(this));
+                }
+                PopIndent();
             }
             sb.Append(")");
-            stackDepth--;
             return sb.ToString();
         }
 
