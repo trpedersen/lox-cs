@@ -13,6 +13,8 @@ namespace Lox1.Core
         private int current = 0;
         private int line = 1;
 
+        private Action<int, string> ScanErrorHandler;
+
 
         private static Dictionary<String, TokenType> keywords = new Dictionary<string, TokenType>();
 
@@ -36,8 +38,9 @@ namespace Lox1.Core
             keywords.Add("while", WHILE);
         }
 
-        public Scanner(string source)
+        public Scanner(Action<int, string> scanErrorHandler, string source)
         {
+            ScanErrorHandler = scanErrorHandler;
             this.source = source.ToCharArray();
         }
 
@@ -127,7 +130,7 @@ namespace Lox1.Core
                 }
                 if(scanState != ScanState.AcceptedFinal)
                 {
-                    Lox.Error(startLine, "Invalid /* */ style comment, missing closing '*/'");
+                    ScanErrorHandler(startLine, "Invalid /* */ style comment, missing closing '*/'");
                 }
             }
             else
@@ -182,7 +185,7 @@ namespace Lox1.Core
                     else if (IsAlpha(c))
                         Identifier();
                     else
-                        Lox.Error(line, "Unexpected character.");
+                        ScanErrorHandler(line, "Unexpected character.");
                     break;
             }
         }
@@ -246,7 +249,7 @@ namespace Lox1.Core
             // Unterminated string...
             if (IsAtEnd())
             {
-                Lox.Error(line, "Unterminated string.");
+                ScanErrorHandler(line, "Unterminated string.");
                 return;
             }
 

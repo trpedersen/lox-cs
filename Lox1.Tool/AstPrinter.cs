@@ -18,11 +18,13 @@ namespace Lox1.Tool
 
         public void Write(Expr expr)
         {
-            writer.Write(expr.Accept<string>(this));
+            currentIndentLevel = 0;
+            writer.Write(expr.Accept<string>(this).Trim());
         }
         public void WriteLine(Expr expr)
         {
-            writer.WriteLine(expr.Accept<string>(this));
+            currentIndentLevel = 0;
+            writer.WriteLine(expr.Accept<string>(this).Trim());
         }
 
         public string VisitBinaryExpr(Binary expr)
@@ -40,7 +42,9 @@ namespace Lox1.Tool
             if (expr.Value == null)
                 return "nil";
             else
+            {
                 return expr.Value.ToString();
+            }
         }
 
         public string VisitUnaryExpr(Unary expr)
@@ -48,18 +52,65 @@ namespace Lox1.Tool
             return Parenthesise(expr.Operator.Lexeme, expr.Right);
         }
 
+        private int currentIndentLevel = 0;
+        private string standardIndent = "  ";
+        static string currentIndent = "";
+
+        private void PushIndent()
+        {
+            currentIndentLevel++;
+            currentIndent += standardIndent;
+        }
+
+        private void PopIndent()
+        {
+            currentIndentLevel--;
+            if (currentIndentLevel < 0)
+                currentIndentLevel = 0;
+            currentIndent = "";
+            for (int i = 0; i < currentIndentLevel; i++)
+            {
+                currentIndent += standardIndent;
+            }
+        }
+
         private string Parenthesise(string name, params Expr[] expressions)
         {
             StringBuilder sb = new StringBuilder();
 
-            sb.Append("(").Append(name);
-            foreach(Expr expr in expressions)
+            sb.Append("(")
+                .Append(name);
+
+            bool allLiterals = true;
+            foreach(var expr in expressions)
             {
-                sb.Append(" ");
-                sb.Append(expr.Accept<string>(this));
+                if(!(expr is Expr.Literal))
+                {
+                    allLiterals = false;
+                    break;
+                }
+            }
+
+            if (allLiterals)
+            {
+                foreach (var expr in expressions)
+                {
+                    sb.Append(" ")
+                        .Append(expr.Accept<string>(this));
+                }
+            }
+            else
+            {
+                PushIndent();
+                foreach (Expr expr in expressions)
+                {
+                    sb.Append("\n")
+                        .Append(currentIndent)
+                        .Append(expr.Accept<string>(this));
+                }
+                PopIndent();
             }
             sb.Append(")");
-
             return sb.ToString();
         }
 
