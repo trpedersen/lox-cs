@@ -18,11 +18,13 @@ namespace Lox1.Tool
 
         public void Write(Expr expr)
         {
-            writer.Write(expr.Accept<string>(this));
+            stackDepth = -1;
+            writer.Write(expr.Accept<string>(this).Trim());
         }
         public void WriteLine(Expr expr)
         {
-            writer.WriteLine(expr.Accept<string>(this));
+            stackDepth = -1;
+            writer.WriteLine(expr.Accept<string>(this).Trim());
         }
 
         public string VisitBinaryExpr(Binary expr)
@@ -40,7 +42,16 @@ namespace Lox1.Tool
             if (expr.Value == null)
                 return "nil";
             else
-                return expr.Value.ToString();
+            {
+                StringBuilder sb = new StringBuilder();
+                sb.Append("\n");
+                for (int i = 0; i < stackDepth + 1; i++)
+                {
+                    sb.Append(standardIndent);
+                }
+                sb.Append(expr.Value.ToString());
+                return sb.ToString();
+            }
         }
 
         public string VisitUnaryExpr(Unary expr)
@@ -48,18 +59,32 @@ namespace Lox1.Tool
             return Parenthesise(expr.Operator.Lexeme, expr.Right);
         }
 
+        private int stackDepth = -1;
+        private string standardIndent = "  ";
+
         private string Parenthesise(string name, params Expr[] expressions)
         {
             StringBuilder sb = new StringBuilder();
+            stackDepth++;
+            if (stackDepth != 0)
+            {
+                sb.Append("\n");
+            }
+
+            for (int i = 0; i < stackDepth; i++)
+            {
+                sb.Append(standardIndent);
+            }
 
             sb.Append("(").Append(name);
-            foreach(Expr expr in expressions)
+
+            foreach (Expr expr in expressions)
             {
                 sb.Append(" ");
                 sb.Append(expr.Accept<string>(this));
             }
             sb.Append(")");
-
+            stackDepth--;
             return sb.ToString();
         }
 

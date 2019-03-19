@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Lox1.Core.Ast;
+using Lox1.Tool;
+using System;
 using System.IO;
 
 namespace Lox1.Core
@@ -46,12 +48,18 @@ namespace Lox1.Core
         {
             if (input != null)
             {
-                Scanner scanner = new Scanner(input);
+                Scanner scanner = new Scanner(Error, input);
                 var tokens = scanner.ScanTokens();
-                foreach (var token in tokens)
-                {
-                    Console.WriteLine(token.ToString());
-                }
+                Parser parser = new Parser(Error, tokens);
+                HadError = false;
+
+                Expr expression = parser.Parse();
+                if (HadError)
+                    return (int)ExitCode.LoxError;
+
+                AstPrinter printer = new AstPrinter(Console.Out);
+                printer.WriteLine(expression);
+
             }
             return 0;
         }

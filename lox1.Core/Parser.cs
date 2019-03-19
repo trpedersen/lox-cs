@@ -30,10 +30,24 @@ namespace Lox1.Core
 
         private readonly List<Token> Tokens;
         private int current = 0;
+        private Action<Token, string> ParseErrorHandler;
 
-        public Parser(List<Token> tokens)
+        public Parser(Action<Token, string> parseErrorHandler, List<Token> tokens)
         {
+            ParseErrorHandler = parseErrorHandler;
             Tokens = tokens;
+        }
+
+        public Expr Parse()
+        {
+            try
+            {
+                return Expression();
+            }
+            catch(ParseException e)
+            {
+                return null;
+            }
         }
 
         private Expr Expression()
@@ -119,7 +133,7 @@ namespace Lox1.Core
             if (Match(TRUE)) return new Expr.Literal(true);
             if (Match(NIL)) return new Expr.Literal(null);
 
-            if (Match(NUMBER, STRING)) { return new Expr.Literal(Previous().Literal)};
+            if (Match(NUMBER, STRING)) { return new Expr.Literal(Previous().Literal); };
 
             if (Match(LEFT_PAREN))
             {
@@ -127,7 +141,7 @@ namespace Lox1.Core
                 Consume(RIGHT_PAREN, "Expect ')' after expression.");
                 return new Expr.Grouping(expr);
             }
-            throw Error(Peek(), "Matching Primary: Invalid Token");
+            throw Error(Peek(), "Expecting an expression.");
         }
 
         private Token Consume(TokenType type, string message)
@@ -138,8 +152,32 @@ namespace Lox1.Core
 
         private ParseException Error(Token token, string message)
         {
-            Lox.Error(token, message);
+            ParseErrorHandler(token, message);
             return new ParseException(message);
+        }
+
+        private void Synchronise()
+        {
+            Addition();
+            while (!IsAtEnd())
+            {
+                if (Previous().Type == SEMICOLON)
+                    return;
+
+                switch (Peek().Type)
+                {
+                    case CLASS:
+                    case FUN:
+                    case VAR:
+                    case FOR:
+                    case IF:
+                    case WHILE:
+                    case PRINT:
+                    case RETURN:
+                        return;
+                }
+                Advance();
+            }
         }
 
         private bool Match(params TokenType[] tokenTypes)
