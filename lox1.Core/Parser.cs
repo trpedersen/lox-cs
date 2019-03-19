@@ -10,7 +10,9 @@ namespace Lox1.Core
     /*
         expression     → equality ;
         equality       → comparison ( ( "!=" | "==" ) comparison )* ;
-        comparison     → addition ( ( ">" | ">=" | "<" | "<=" ) addition )* ;
+        comma           ->  comparison ("," comparison)*
+        comparison     → multiplication ( ( ">" | ">=" | "<" | "<=" ) multiplication )* ;
+
         addition       → multiplication ( ( "-" | "+" ) multiplication )* ;
         multiplication → unary ( ( "/" | "*" ) unary )* ;
         unary          → ( "!" | "-" ) unary
@@ -59,8 +61,23 @@ namespace Lox1.Core
         {
             // equality → comparison ( ( "!=" | "==" ) comparison )* ;
 
-            Expr expr = Comparison();
+            Expr expr = Comma();
             while(Match(BANG_EQUAL, EQUAL_EQUAL))
+            {
+                Token op = Previous();
+                Expr right = Comma();
+                expr = new Expr.Binary(expr, op, right);
+            }
+            return expr;
+        }
+
+        private Expr Comma()
+        {
+            // comma-> "," comma
+            //      | comparison("," comparison) *
+            Expr expr = Comparison();
+
+            while (Match(COMMA))
             {
                 Token op = Previous();
                 Expr right = Comparison();
