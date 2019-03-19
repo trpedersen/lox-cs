@@ -43,14 +43,6 @@ namespace Lox1.Tool
                 return "nil";
             else
             {
-                //StringBuilder sb = new StringBuilder();
-                //sb.Append("\n");
-                //for (int i = 0; i < stackDepth + 1; i++)
-                //{
-                //    sb.Append(standardIndent);
-                //}
-                //sb.Append(expr.Value.ToString());
-                //return sb.ToString();
                 return expr.Value.ToString();
             }
         }
