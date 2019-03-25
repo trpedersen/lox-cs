@@ -1,7 +1,6 @@
 ﻿using Lox1.Core;
 using NUnit.Framework;
 
-using static Lox1.Core.Lox;
 using System.Linq;
 using Lox1.Core.Ast;
 using Lox1.Tool;
@@ -36,7 +35,7 @@ namespace Lox1.Tests
                 printer.Write(expression);
                 result = writer.ToString();
             }
-            string expected = "(* (- 123) (group 45.67))";
+            string expected = "(*\n  (- 123)\n  (group 45.67))";
 
             Assert.AreEqual(expected, result);
         }

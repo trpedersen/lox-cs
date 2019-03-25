@@ -32,7 +32,7 @@ namespace Lox1.Core
 
         private readonly List<Token> Tokens;
         private int current = 0;
-        private Action<Token, string> ParseErrorHandler;
+        private readonly Action<Token, string> ParseErrorHandler;
 
         public Parser(Action<Token, string> parseErrorHandler, List<Token> tokens)
         {
@@ -46,7 +46,7 @@ namespace Lox1.Core
             {
                 return Expression();
             }
-            catch(ParseException e)
+            catch(ParseException)
             {
                 return null;
             }

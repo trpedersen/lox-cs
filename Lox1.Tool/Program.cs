@@ -12,7 +12,7 @@ namespace Lox1.Tool
         [Verb("generate-ast", HelpText = "Generate AST.")]
         public class AstOptions
         {
-            [Option('o', "output-director", Required = true, HelpText = "Output directory")]
+            [Option('o', "output-directory", Required = true, HelpText = "Output directory")]
             public string OutputDirectory { get; set; }
 
         }
